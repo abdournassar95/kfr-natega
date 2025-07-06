@@ -7,19 +7,19 @@
   <style>
     body {
       font-family: 'Cairo', sans-serif;
-      background-color: #121212;
-      color: #f1f1f1;
+      background-color: #f4f4f4;
+      color: #333;
       text-align: center;
       padding: 40px;
       direction: rtl;
     }
     .container {
-      background: #1e1e1e;
+      background: #fff;
       padding: 30px;
       border-radius: 12px;
       max-width: 600px;
       margin: auto;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     }
     input[type="number"] {
       padding: 12px;
@@ -28,8 +28,8 @@
       font-size: 16px;
       border-radius: 6px;
       border: 1px solid #444;
-      background-color: #2c2c2c;
-      color: #fff;
+      background-color: #eaeaea;
+      color: #333;
     }
     button {
       padding: 12px 25px;
@@ -48,7 +48,7 @@
       margin-top: 25px;
       text-align: center;
       font-size: 18px;
-      background-color: #2c2c2c;
+      background-color: #eaeaea;
       padding: 20px;
       border-radius: 8px;
       line-height: 2;
@@ -56,7 +56,7 @@
     .student-name {
       font-size: 26px;
       font-weight: bold;
-      color: #ffffff;
+      color: #333;
       margin-bottom: 10px;
     }
     .final-result {
@@ -69,17 +69,51 @@
       margin-top: 20px;
       font-weight: bold;
     }
+    .footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #555;
+      text-align: center;
+    }
+    .date {
+      font-size: 16px;
+      color: #666;
+      margin-top: 10px;
+    }
+    .certificate {
+      display: none;
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #00e676;
+      color: #fff;
+      border-radius: 10px;
+      font-size: 20px;
+    }
+    .certificate button {
+      background-color: #00b248;
+      margin-top: 15px;
+    }
   </style>
   <script src="results.js"></script>
 </head>
 <body>
   <div class="container">
     <h2>نتيجة الشهادة الإعدادية<br>محافظة كفر الشيخ 2025</h2>
+    <div class="date" id="date"></div>
     <input type="number" id="seatInput" placeholder="أدخل رقم الجلوس">
     <br>
     <button onclick="searchResult()">عرض النتيجة</button>
     <div class="result" id="result"></div>
     <div class="not-found" id="notFound"></div>
+    <div class="certificate" id="certificate">
+      <h3>شهادة تقدير</h3>
+      <p>مبروك! تم النجاح في الشهادة الإعدادية.</p>
+      <p>تهنئة مقدمة من: عبده رجب نصار</p>
+      <button onclick="printCertificate()">طباعة الشهادة</button>
+    </div>
+  </div>
+  <div class="footer">
+    <p>تصميم وتطوير بواسطة عبده رجب نصار</p>
   </div>
 
   <script>
@@ -87,10 +121,16 @@
       const seatNumber = document.getElementById('seatInput').value;
       const resultDiv = document.getElementById('result');
       const notFoundDiv = document.getElementById('notFound');
+      const certificateDiv = document.getElementById('certificate');
       resultDiv.innerHTML = '';
       notFoundDiv.innerHTML = '';
+      certificateDiv.style.display = 'none';
 
       const student = results.find(s => s.seat_number == seatNumber);
+      
+      // Set today's date
+      const date = new Date();
+      document.getElementById('date').innerHTML = `التاريخ: ${date.toLocaleDateString('ar-EG')}`;
 
       if (student) {
         resultDiv.innerHTML = `
@@ -100,9 +140,23 @@
           <div><strong>المجموع:</strong> ${student.total_score}</div>
           <div class="final-result"><strong>النتيجة:</strong> ${student.result}</div>
         `;
+        
+        if (student.result === "ناجح") {
+          certificateDiv.style.display = 'block';
+        }
       } else {
         notFoundDiv.textContent = 'لم يتم العثور على نتيجة لهذا الرقم';
       }
+    }
+
+    function printCertificate() {
+      const printContent = document.getElementById('certificate').innerHTML;
+      const newWindow = window.open('', '', 'height=500, width=700');
+      newWindow.document.write('<html><head><title>شهادة تقدير</title></head><body>');
+      newWindow.document.write(printContent);
+      newWindow.document.write('</body></html>');
+      newWindow.document.close();
+      newWindow.print();
     }
   </script>
 </body>
