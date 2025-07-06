@@ -94,35 +94,13 @@
       margin-top: 15px;
     }
   </style>
-  <script src="results.js"></script>
-</head>
-<body>
-  <div class="container">
-    <h2>نتيجة الشهادة الإعدادية<br>محافظة كفر الشيخ 2025</h2>
-    <div class="date" id="date"></div>
-    <input type="number" id="seatInput" placeholder="أدخل رقم الجلوس">
-    <br>
-    <button onclick="searchResult()">عرض النتيجة</button>
-    <div class="result" id="result"></div>
-    <div class="not-found" id="notFound"></div>
-    
-    <!-- شهادة التقدير -->
-    <div class="certificate" id="certificate">
-      <h3>شهادة تقدير</h3>
-      <p>مبروك! تم النجاح في الشهادة الإعدادية.</p>
-      <p>الطالب: <span id="studentName"></span></p>
-      <p>المدرسة: <span id="schoolName"></span></p>
-      <p>الإدارة: <span id="departmentName"></span></p>
-      <p>المجموع: <span id="totalScore"></span></p>
-      <p>تهنئة مقدمة من: عبده رجب نصار</p>
-      <button onclick="printCertificate()">طباعة الشهادة</button>
-    </div>
-  </div>
-  <div class="footer">
-    <p>تصميم وتطوير بواسطة عبده رجب نصار</p>
-  </div>
-
   <script>
+    // بيانات الطلاب (يمكنك تغيير هذه البيانات)
+    const results = [
+      { seat_number: 12345, student_name: 'أحمد محمد', school_name: 'مدرسة كفر الشيخ', department_name: 'إدارة كفر الشيخ', total_score: 350, result: 'ناجح' },
+      { seat_number: 67890, student_name: 'محمود مصطفى', school_name: 'مدرسة كفر الشيخ', department_name: 'إدارة كفر الشيخ', total_score: 300, result: 'راسب' }
+    ];
+
     function searchResult() {
       const seatNumber = document.getElementById('seatInput').value;
       const resultDiv = document.getElementById('result');
@@ -135,11 +113,11 @@
 
       resultDiv.innerHTML = '';
       notFoundDiv.innerHTML = '';
-      certificateDiv.style.display = 'none';
+      certificateDiv.style.display = 'none'; // إخفاء شهادة التقدير في البداية
 
       const student = results.find(s => s.seat_number == seatNumber);
-      
-      // Set today's date
+
+      // إظهار تاريخ اليوم
       const date = new Date();
       document.getElementById('date').innerHTML = `التاريخ: ${date.toLocaleDateString('ar-EG')}`;
 
@@ -151,10 +129,10 @@
           <div><strong>المجموع:</strong> ${student.total_score}</div>
           <div class="final-result"><strong>النتيجة:</strong> ${student.result}</div>
         `;
-        
-        // If the student is successful, show the certificate
+
+        // إذا كانت النتيجة "ناجح"، إظهار شهادة التقدير
         if (student.result === "ناجح") {
-          certificateDiv.style.display = 'block';  // Show certificate
+          certificateDiv.style.display = 'block';  // إظهار شهادة التقدير
           studentName.textContent = student.student_name;
           schoolName.textContent = student.school_name;
           departmentName.textContent = student.department_name;
@@ -175,5 +153,31 @@
       printWindow.print();
     }
   </script>
+</head>
+<body>
+  <div class="container">
+    <h2>نتيجة الشهادة الإعدادية<br>محافظة كفر الشيخ 2025</h2>
+    <div class="date" id="date"></div>
+    <input type="number" id="seatInput" placeholder="أدخل رقم الجلوس">
+    <br>
+    <button onclick="searchResult()">عرض النتيجة</button>
+    <div class="result" id="result"></div>
+    <div class="not-found" id="notFound"></div>
+
+    <!-- شهادة التقدير -->
+    <div class="certificate" id="certificate">
+      <h3>شهادة تقدير</h3>
+      <p>مبروك! تم النجاح في الشهادة الإعدادية.</p>
+      <p>الطالب: <span id="studentName"></span></p>
+      <p>المدرسة: <span id="schoolName"></span></p>
+      <p>الإدارة: <span id="departmentName"></span></p>
+      <p>المجموع: <span id="totalScore"></span></p>
+      <p>تهنئة مقدمة من: عبده رجب نصار</p>
+      <button onclick="printCertificate()">طباعة الشهادة</button>
+    </div>
+  </div>
+  <div class="footer">
+    <p>تصميم وتطوير بواسطة عبده رجب نصار</p>
+  </div>
 </body>
 </html>
