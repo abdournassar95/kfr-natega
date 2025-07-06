@@ -80,18 +80,10 @@
       color: #666;
       margin-top: 10px;
     }
-    .certificate {
-      display: none;
+    canvas {
       margin-top: 20px;
-      padding: 20px;
-      background-color: #00e676;
-      color: #fff;
-      border-radius: 10px;
-      font-size: 20px;
-    }
-    .certificate button {
-      background-color: #00b248;
-      margin-top: 15px;
+      border: 1px solid #000;
+      display: none; /* Hidden by default */
     }
   </style>
   <script src="results.js"></script>
@@ -105,12 +97,11 @@
     <button onclick="searchResult()">عرض النتيجة</button>
     <div class="result" id="result"></div>
     <div class="not-found" id="notFound"></div>
-    <div class="certificate" id="certificate">
-      <h3>شهادة تقدير</h3>
-      <p>مبروك! تم النجاح في الشهادة الإعدادية.</p>
-      <p>تهنئة مقدمة من: عبده رجب نصار</p>
-      <button onclick="printCertificate()">طباعة الشهادة</button>
-    </div>
+    
+    <!-- Canvas to display certificate -->
+    <canvas id="certificateCanvas" width="600" height="400"></canvas>
+    
+    <button id="printButton" style="display:none;" onclick="printCanvas()">طباعة الشهادة</button>
   </div>
   <div class="footer">
     <p>تصميم وتطوير بواسطة عبده رجب نصار</p>
@@ -121,10 +112,12 @@
       const seatNumber = document.getElementById('seatInput').value;
       const resultDiv = document.getElementById('result');
       const notFoundDiv = document.getElementById('notFound');
-      const certificateDiv = document.getElementById('certificate');
+      const certificateCanvas = document.getElementById('certificateCanvas');
+      const printButton = document.getElementById('printButton');
       resultDiv.innerHTML = '';
       notFoundDiv.innerHTML = '';
-      certificateDiv.style.display = 'none';
+      certificateCanvas.style.display = 'none';
+      printButton.style.display = 'none';
 
       const student = results.find(s => s.seat_number == seatNumber);
       
@@ -141,22 +134,44 @@
           <div class="final-result"><strong>النتيجة:</strong> ${student.result}</div>
         `;
         
+        // If the student is successful, show the certificate on canvas
         if (student.result === "ناجح") {
-          certificateDiv.style.display = 'block';
+          certificateCanvas.style.display = 'block';
+          printButton.style.display = 'inline-block';
+          drawCertificate(student);
         }
       } else {
         notFoundDiv.textContent = 'لم يتم العثور على نتيجة لهذا الرقم';
       }
     }
 
-    function printCertificate() {
-      const printContent = document.getElementById('certificate').innerHTML;
-      const newWindow = window.open('', '', 'height=500, width=700');
-      newWindow.document.write('<html><head><title>شهادة تقدير</title></head><body>');
-      newWindow.document.write(printContent);
-      newWindow.document.write('</body></html>');
-      newWindow.document.close();
-      newWindow.print();
+    function drawCertificate(student) {
+      const canvas = document.getElementById('certificateCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas before drawing
+
+      ctx.font = '30px Cairo';
+      ctx.fillStyle = '#333';
+      ctx.fillText('شهادة تقدير', 200, 50);
+
+      ctx.font = '20px Cairo';
+      ctx.fillText('مبروك! تم النجاح في الشهادة الإعدادية.', 50, 100);
+      ctx.fillText(`الطالب: ${student.student_name}`, 50, 140);
+      ctx.fillText(`المدرسة: ${student.school_name}`, 50, 180);
+      ctx.fillText(`الإدارة: ${student.department_name}`, 50, 220);
+      ctx.fillText(`المجموع: ${student.total_score}`, 50, 260);
+      ctx.fillText('تهنئة مقدمة من: عبده رجب نصار', 50, 300);
+    }
+
+    function printCanvas() {
+      const canvas = document.getElementById('certificateCanvas');
+      const printWindow = window.open('', '', 'width=600,height=400');
+      printWindow.document.write('<html><head><title>طباعة الشهادة</title></head><body>');
+      printWindow.document.write('<img src="' + canvas.toDataURL() + '" />');
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
+      printWindow.print();
     }
   </script>
 </body>
